@@ -3,7 +3,7 @@ import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 
-import 'amplifyconfiguration.dart';
+import 'Logic/Cloud Config/Amplify/amplifyconfiguration.dart';
 
 void main() {
   runApp(const MyApp());
