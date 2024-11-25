@@ -10,6 +10,12 @@
       "StackName": "amplify-g9capstoneiotapp-dev-a9559",
       "StackId": "arn:aws:cloudformation:ca-central-1:559050215190:stack/amplify-g9capstoneiotapp-dev-a9559/a6b0e580-aadd-11ef-9260-0209115facbf",
       "AmplifyAppId": "d27oc3pajb7wks"
+    },
+    "categories": {
+      "auth": {
+        "g9capstoneiotappd9b577e4": {},
+        "g9capstoneiotapp": {}
+      }
     }
   }
 }
