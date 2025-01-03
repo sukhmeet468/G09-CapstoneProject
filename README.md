@@ -1,16 +1,15 @@
-# g9capstoneiotapp
+## UoM G9 Capstone Project
 
-A new Flutter project.
+## Design and Implementation of IoT Lake/River Real-Time Depth Monitoring, Hazard Detection and Path Mapping System.
 
-## Getting Started
+## Team Members:
+    1. Sukhmeet Singh Hora (7884859) 
+    2. Sudipta Dip (7900493) 
+    3. Gunjan Modi (7859501) 
+    4. Matt Fryatt (7743214) 
+    5. Het Patel (7868309) 
+    6. Justine Ugalde (7789023) 
 
-This project is a starting point for a Flutter application.
+##### Department Supervisor: Dr. Ken Ferens 
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+ 
