@@ -39,6 +39,9 @@ dependencies:
   amplify_auth_cognito: ^2.5.0
   amplify_authenticator: ^2.3.0
   mqtt_client: ^10.5.1
+  amplify_storage_s3: ^2.5.1
+  provider: ^6.1.2
+  aws_common: ^0.7.4
   
 
 dev_dependencies:

@@ -9,5 +9,11 @@ export type AmplifyDependentResourcesAttributes = {
       "UserPoolId": "string",
       "UserPoolName": "string"
     }
+  },
+  "storage": {
+    "s3g9capstoneiotappstorageuniqueusercerts": {
+      "BucketName": "string",
+      "Region": "string"
+    }
   }
 }

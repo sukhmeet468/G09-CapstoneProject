@@ -1,10 +1,15 @@
 import 'dart:convert';
+import 'package:g9capstoneiotapp/Logic/App%20Logic/authentication/auth_functions.dart';
+import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/comm_manager/subscribe_manager.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/connect.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/publish.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/subscribe.dart';
+import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/userinfo.dart';
+import 'package:g9capstoneiotapp/Storage/Cloud%20Storage/readStorage_functions.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
 MqttServerClient clientG = MqttServerClient.withPort("", "clientId", 0);
+UserAttributes userValue = UserAttributes();
 
 String localcertToken = "";
 String localcertId = "";
@@ -47,5 +52,22 @@ Future<void> createKeysAndCertificate() async {
 }
 
 Future<void> downloadCertificateAndKeys() async {
-  await createKeysAndCertificate();
+  //get the details of the user signed in
+  await fetchCurrentUserAttributes();
+  //check for the certs and keys saved for the user, if not create and then connect to the IoT Core through a private secure channel
+  String dataMap = await downloadToMemory("${userValue.email}/IoTData");
+  if (dataMap != "") {
+    Map<String, dynamic> jsonData = json.decode(dataMap);
+    localcertId = jsonData["certificateId"];
+    localcertPem = jsonData["certificatePem"];
+    localcertToken = jsonData["certificateOwnershipToken"];
+    localKey = jsonData["privateKey"];
+    MqttServerClient client = await connectLocalP(localcertPem, localKey);
+    setLocalClient(client);
+  } else {
+    // Handle the case where downloadToMemory returns an empty map
+    await createKeysAndCertificate();
+  }
+  // subscribe to all topics
+  await subMQTTTopics();
 }

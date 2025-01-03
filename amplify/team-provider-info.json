@@ -15,6 +15,9 @@
       "auth": {
         "g9capstoneiotappd9b577e4": {},
         "g9capstoneiotapp": {}
+      },
+      "storage": {
+        "s3g9capstoneiotappstorageuniqueusercerts": {}
       }
     }
   }

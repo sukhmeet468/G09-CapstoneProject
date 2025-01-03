@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/comm_manager/subscribe_manager.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/connect.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/fleetprovisionmanager.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/publish.dart';
+import 'package:g9capstoneiotapp/Storage/Cloud%20Storage/writestorage_functions.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
@@ -33,6 +33,7 @@ void subscribeToTopic(MqttServerClient client, String topic) {
 }
 
 Future<void> handleResponse(String value) async {
+  safePrint(value);
   Map<String, dynamic> jsonData = json.decode(value);
   certificateId = jsonData["certificateId"];
   certificatePem = jsonData["certificatePem"];
@@ -43,7 +44,7 @@ Future<void> handleResponse(String value) async {
   disconnectClient(clientG);
   MqttServerClient client = await connectLocalP(certificatePem, privateKey);
   setLocalClient(client);
-  await subMQTTTopics();
+  uploadCertsDataAsFile("${userValue.email}/IoTData", value);
 }
 
 void setLocalClient(MqttServerClient client) {

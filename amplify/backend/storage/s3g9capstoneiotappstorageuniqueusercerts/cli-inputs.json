@@ -1,0 +1,16 @@
+{
+  "resourceName": "s3g9capstoneiotappstorageuniqueusercerts",
+  "bucketName": "g9capstoneiotapp-storage-uniqueusercerts",
+  "policyUUID": "12174e21",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ",
+    "CREATE_AND_UPDATE",
+    "DELETE"
+  ],
+  "authAccess": [
+    "READ",
+    "CREATE_AND_UPDATE",
+    "DELETE"
+  ]
+}
