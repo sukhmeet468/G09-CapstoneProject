@@ -43,6 +43,7 @@ dependencies:
   provider: ^6.1.2
   aws_common: ^0.7.4
   path_provider: ^2.1.5
+  go_router: ^14.6.2
   
 
 dev_dependencies:
@@ -75,7 +76,8 @@ flutter:
     - assets/certs/AmazonRootCA1.pem
     - assets/certs/29808742218af61aa5eab9c21e3f8494c94e2c5e98020a0e57a6e63c2e9d0e10-certificate.pem.crt
     - assets/certs/29808742218af61aa5eab9c21e3f8494c94e2c5e98020a0e57a6e63c2e9d0e10-private.pem.key
-
+    - assets/photos/logo.jpeg
+    
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
