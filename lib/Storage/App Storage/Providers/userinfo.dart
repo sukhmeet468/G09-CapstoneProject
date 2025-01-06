@@ -1,5 +1,3 @@
-// ignore_for_file: file_names
-
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 

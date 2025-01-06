@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/comm_manager/subscribe_manager.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/connect.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/fleetprovisionmanager.dart';
-import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/publish.dart';
 import 'package:g9capstoneiotapp/Storage/Cloud%20Storage/writestorage_functions.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -25,9 +25,10 @@ void subscribeToTopic(MqttServerClient client, String topic) {
     String topic = c[0].topic;
     if (topic == responseTopic) {
       await handleResponse(pt);
-    } else if(topic == "g9capstone/testTopic") {
-      safePrint(pt);
-      publishMessage(client, "g9capstone/testPublish", "testing from App");
+    } else if(topic == "g9capstone/readValues") {
+      await handleReadValuesResponse(pt);
+    } else if(topic == "g9capstone/piHeartbeat") {
+      await handleHeartbeatResponse(pt);
     }
   });
 }

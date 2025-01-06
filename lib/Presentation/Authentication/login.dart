@@ -1,9 +1,9 @@
-// ignore_for_file: use_key_in_widget_constructors
-
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:flutter/material.dart';
 import 'package:g9capstoneiotapp/Presentation/Authentication/auth_layout.dart';
 import 'package:g9capstoneiotapp/Presentation/Home/myhome.dart';
+import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/premappedlist.dart';
+import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/realtimeinfo.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/userinfo.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +13,6 @@ class MyLogin extends StatefulWidget {
 }
 
 class _MyLoginState extends State<MyLogin> {
-  
   @override
   void initState() {
     super.initState();
@@ -94,9 +93,11 @@ class _MyLoginState extends State<MyLogin> {
             child: MultiProvider(
               providers: [
                 ChangeNotifierProvider(create: (_) => UserAttributes()),
+                ChangeNotifierProvider(create: (_) => LocationData()),
+                ChangeNotifierProvider(create: (_) => LocationMapProvider()),
                 // Other providers if you have them
               ],
-              child: const MyApp(),
+              child: MyApp(),
             ),
           ),
         ),
