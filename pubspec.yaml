@@ -47,6 +47,7 @@ dependencies:
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
   flutter_map_heatmap: ^0.0.8
+  flutter_reactive_ble: ^5.4.0
   
 
 dev_dependencies:
