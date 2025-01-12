@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:g9capstoneiotapp/Logic/App%20Logic/authentication/auth_functions.dart';
+import 'package:g9capstoneiotapp/Logic/Auth/authentication/auth_functions.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/comm_manager/subscribe_manager.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/connect.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/publish.dart';

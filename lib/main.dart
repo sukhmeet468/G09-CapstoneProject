@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:g9capstoneiotapp/Logic/Bluetooth%20Comm/ble_manager.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Config/Amplify/configure.dart';
 import 'package:g9capstoneiotapp/Presentation/Authentication/login.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/premappedlist.dart';
@@ -13,6 +14,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // configure Amplify
   await configureAmplify();
+  // Request permissions for bluetooth services
+    await requestPermissions();
   runApp(
     MultiProvider(
       providers: [

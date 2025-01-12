@@ -4,6 +4,8 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   amplify_db_common
+  geolocator_windows
+  permission_handler_windows
   url_launcher_windows
 )
 

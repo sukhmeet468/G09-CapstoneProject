@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/publish.dart';
-import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/subscribe.dart';
+import 'package:g9capstoneiotapp/Logic/Bluetooth%20Comm/ble_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DeviceControlScreen extends StatefulWidget {
   @override
@@ -12,50 +12,54 @@ class _DeviceControlScreenState extends State<DeviceControlScreen> {
   bool isStopEnabled = false;
   bool isUploadMapEnabled = false;
 
-  // Function to simulate publishing a message (for example, print the JSON)
-  void publishMsg(String messageType) {
-    String message = "";
-    switch (messageType) {
-      case 'START':
-        message = "START";
-        break;
-      case 'STOP':
-        message = "STOP";
-        break;
-      case 'UPLOAD_MAP':
-        message = "UPLOAD";
-        break;
-    }
-    // Call the publish message to send a message to Pi4 using MQTT
-    publishMessage(clientLocal, "g9capstone/PiAction", message);
+  @override
+  void initState() {
+    super.initState();
+    _loadState();
   }
 
-  // Function to handle START button press
-  void onStartPressed() {
-    publishMsg('START');
+  Future<void> _loadState() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isStartEnabled = prefs.getBool('isStartEnabled') ?? true;
+      isStopEnabled = prefs.getBool('isStopEnabled') ?? false;
+      isUploadMapEnabled = prefs.getBool('isUploadMapEnabled') ?? false;
+    });
+  }
+
+  Future<void> _saveState() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isStartEnabled', isStartEnabled);
+    prefs.setBool('isStopEnabled', isStopEnabled);
+    prefs.setBool('isUploadMapEnabled', isUploadMapEnabled);
+  }
+
+  Future<void> onStartPressed() async {
+    await sendStart(); // Assume this is implemented elsewhere
     setState(() {
       isStartEnabled = false;
       isStopEnabled = true;
     });
+    _saveState();
   }
 
-  // Function to handle STOP button press
-  void onStopPressed() {
-    publishMsg('STOP');
+  Future<void> onStopPressed() async {
+    await sendStop(); // Assume this is implemented elsewhere
     setState(() {
       isStopEnabled = false;
       isUploadMapEnabled = true;
       isStartEnabled = true;
     });
+    _saveState();
   }
 
-  // Function to handle UPLOAD MAP button press
-  void onUploadMapPressed() {
-    publishMsg('UPLOAD_MAP');
+  Future<void> onUploadMapPressed() async {
+    await sendUpload(); // Assume this is implemented elsewhere
     setState(() {
       isUploadMapEnabled = false;
       isStartEnabled = true;
     });
+    _saveState();
   }
 
   // Button style for enabled state
@@ -93,7 +97,8 @@ class _DeviceControlScreenState extends State<DeviceControlScreen> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: isUploadMapEnabled ? onUploadMapPressed : null,
-              style: isUploadMapEnabled ? enabledButtonStyle : disabledButtonStyle,
+              style:
+                  isUploadMapEnabled ? enabledButtonStyle : disabledButtonStyle,
               child: const Text('UPLOAD MAP'),
             ),
           ],

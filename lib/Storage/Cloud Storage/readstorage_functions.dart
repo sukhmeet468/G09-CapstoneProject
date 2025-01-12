@@ -3,9 +3,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/premappedlist.dart';
 import 'package:g9capstoneiotapp/Storage/Classes/locationdepthdata.dart';
-import 'package:g9capstoneiotapp/main.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
 
 // key here is useremail/IoTData
 Future<String> downloadToMemory(String key) async {
@@ -74,10 +72,7 @@ Future<void> listAndReadMaps() async {
             }
           }
           // Now, we can safely add the location list to the provider
-          LocationMapProvider locationMapProvider = Provider.of<LocationMapProvider>(
-            navigatorKeyhome.currentContext!,
-            listen: false,
-          );
+          LocationMapProvider locationMapProvider = LocationMapProvider();
           locationMapProvider.addLocationList(filename.split("/")[2], locationList);
         } else {
           safePrint('Expected a List but got something else: $jsonData');

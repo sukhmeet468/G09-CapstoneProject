@@ -3,8 +3,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/subscribe.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/realtimeinfo.dart';
 import 'package:g9capstoneiotapp/Storage/Classes/locationdepthdata.dart';
-import 'package:g9capstoneiotapp/main.dart';
-import 'package:provider/provider.dart';
 
 Future<void> subMQTTTopics() async {
   //subscribe to all the Topics for all stations
@@ -14,9 +12,7 @@ Future<void> subMQTTTopics() async {
 
 Future<void> handleReadValuesResponse(String msg) async {
   //-------------------------Initializing Variables----------------------------//
-  LocationData locationDataProvider = Provider.of<LocationData>(
-      navigatorKeyhome.currentContext!,
-      listen: false);
+  LocationData locationDataProvider = LocationData();
   //-------------------------Parse the Incoming Message------------------------//
   dynamic parsedMessage;
   try {
@@ -47,9 +43,7 @@ Future<void> handleReadValuesResponse(String msg) async {
 
 Future<void> handleHeartbeatResponse(String msg) async {
   //-------------------------Initializing Variables----------------------------//
-  LocationData locationDataProvider = Provider.of<LocationData>(
-      navigatorKeyhome.currentContext!,
-      listen: false);
+  LocationData locationDataProvider = LocationData();
   // update the provider
   locationDataProvider.setHeartbeatValue = msg;
 }
