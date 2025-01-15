@@ -9,7 +9,6 @@ import 'package:g9capstoneiotapp/Presentation/Maps/PreMapped-View/premappedview.
 import 'package:g9capstoneiotapp/Presentation/Maps/RealTime-View/realtimedepthscreen.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/premappedlist.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/realtimeinfo.dart';
-import 'package:g9capstoneiotapp/Storage/Cloud%20Storage/readstorage_functions.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:provider/provider.dart';
 
@@ -56,8 +55,6 @@ class _MyAppState extends State<MyApp> {
   Future<void> connectAction() async {
     // Simulate the connection process
     await downloadCertificateAndKeys();
-    // read the pre mapped routes
-    await listAndReadMaps();
     // Check if client is connected
     if (clientLocal.connectionStatus!.state == MqttConnectionState.connected) {
       setState(() {

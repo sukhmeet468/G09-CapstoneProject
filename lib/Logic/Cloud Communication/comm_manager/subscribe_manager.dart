@@ -23,7 +23,7 @@ Future<void> handleReadValuesResponse(String msg) async {
   }
   //-------------------------Extract Values------------------------------------//
   String timestamp = parsedMessage['timestamp'] ?? '';
-  double distance = (parsedMessage['distance'] ?? 0).toDouble();
+  int distance = (parsedMessage['distance'] ?? 0).toInt();
   int confidence = (parsedMessage['confidence'] ?? 0).toInt();
   double latitude = (parsedMessage['latitude'] ?? 0).toDouble();
   double longitude = (parsedMessage['longitude'] ?? 0).toDouble();
@@ -39,11 +39,21 @@ Future<void> handleReadValuesResponse(String msg) async {
   );
   // update the provider
   locationDataProvider.addLocation(newLocation);
+  safePrint("$distance-$timestamp-$confidence-$latitude-$longitude-$accuracy");
 }
 
 Future<void> handleHeartbeatResponse(String msg) async {
   //-------------------------Initializing Variables----------------------------//
   LocationData locationDataProvider = LocationData();
+  //-------------------------Parse the Incoming Message------------------------//
+  dynamic parsedMessage;
+  try {
+    parsedMessage = jsonDecode(msg);
+  } catch (e) {
+    safePrint("Error decoding JSON: $e");
+    return;
+  }
   // update the provider
-  locationDataProvider.setHeartbeatValue = msg;
+  locationDataProvider.setHeartbeatValue = parsedMessage['heartbeat'].toString();
+  safePrint("$msg - heartbeat");
 }

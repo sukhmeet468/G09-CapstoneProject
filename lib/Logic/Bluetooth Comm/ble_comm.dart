@@ -21,7 +21,6 @@ Future<List<String>> scanForDeviceIds(FlutterReactiveBle ble, Uuid serviceId) as
         completer.completeError('Scan failed with error: $error');
       },
     );
-    // Let the scan run for a fixed duration (e.g., 5 seconds)
     await Future.delayed(Duration(seconds: 5));
     completer.complete(deviceIds);
   } catch (e) {
@@ -40,7 +39,6 @@ Future<void> connectToDevice({
   Duration prescanDuration = const Duration(seconds: 5),
   Duration connectionTimeout = const Duration(seconds: 2),
 }) async {
-  // ignore: unused_local_variable
   late StreamSubscription<ConnectionStateUpdate> subscription;
   try {
     subscription = ble
@@ -63,6 +61,8 @@ Future<void> connectToDevice({
     );
   } catch (e) {
     safePrint('Error during connection: $e');
+  } finally {
+    await subscription.cancel();
   }
 }
 
@@ -93,8 +93,6 @@ Future<void> subscribeToBleCharacteristic({
         safePrint('Subscription error: $error');
       },
     );
-    // Keep subscription active (replace with your logic if necessary)
-    await Future.delayed(const Duration(seconds: 10)); // Example duration
   } catch (e) {
     safePrint('Error during subscription: $e');
   }

@@ -1,6 +1,6 @@
 class LocationInfo {
   final String timestamp;
-  final double distance;
+  final int distance;
   final int confidence;
   final double latitude;
   final double longitude;

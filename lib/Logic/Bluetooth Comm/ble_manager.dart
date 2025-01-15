@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:g9capstoneiotapp/Logic/Bluetooth%20Comm/ble_comm.dart';
+import 'package:g9capstoneiotapp/main.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 String? deviceId; // Global variable to store the device ID
@@ -22,7 +23,6 @@ Future<void> requestPermissions() async {
 }
 
 Future<bool> discoverAndConnectToBleDevice() async {
-  final FlutterReactiveBle ble = FlutterReactiveBle();
   final Uuid deviceCtrlServiceUuid = Uuid.parse("37dd28eb-b0e5-4714-b874-0fa1f50f88bf");
   final Uuid deviceCtrlCharUuid = Uuid.parse("9232ed36-2122-4773-b1c8-31c2d5114e96");
   final Uuid depthMonitorServiceUuid = Uuid.parse("cbc3bb98-e29b-4b8d-8a1b-3e90aa65a790");
@@ -30,7 +30,7 @@ Future<bool> discoverAndConnectToBleDevice() async {
   try {
     // Discover devices advertising the Device Control Service
     final deviceIds = await scanForDeviceIds(ble, deviceCtrlServiceUuid);
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 2));
     safePrint('Discovered Device IDs: $deviceIds');
     if (deviceIds.isEmpty) {
       safePrint('No devices found advertising the Device Control Service.');
@@ -47,7 +47,7 @@ Future<bool> discoverAndConnectToBleDevice() async {
         deviceCtrlServiceUuid: [deviceCtrlCharUuid],
       },
     );
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
     // Step 4: Subscribe to Depth Monitor Characteristic
     await subscribeToBleCharacteristic(
       ble: ble,
@@ -73,7 +73,7 @@ Future<void> sendStart() async {
   final startValue = utf8.encode('START'); // Encoding the string to UTF-8
   try {
     await writeToCharacteristic(
-      ble: FlutterReactiveBle(),
+      ble: ble,
       serviceUuid: deviceCtrlServiceUuid.toString(),
       characteristicUuid: deviceCtrlCharUuid.toString(),
       deviceId: deviceId!,

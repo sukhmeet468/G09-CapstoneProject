@@ -25,6 +25,8 @@ Future<String> downloadToMemory(String key) async {
 
 Future<void> listAndReadMaps() async {
   try {
+    LocationMapProvider locationMapProvider = LocationMapProvider();
+    locationMapProvider.setLocationMaps([]);
     // List all files in the specified path
     final listResult = await Amplify.Storage.list(
       path: const StoragePath.fromString('public/MappedRoutes'),
@@ -51,7 +53,7 @@ Future<void> listAndReadMaps() async {
             try {
               // Safely extract values from jsonObject with default values or checks
               String timestamp = jsonObject['timestamp'] ?? "Unknown Timestamp";
-              double distance = (jsonObject['distance'] ?? 0.0).toDouble();
+              int distance = (jsonObject['distance'] ?? 0).toInt();
               int confidence = (jsonObject['confidence'] ?? 0).toInt();
               double latitude = (jsonObject['latitude'] ?? 0.0).toDouble();
               double longitude = (jsonObject['longitude'] ?? 0.0).toDouble();
@@ -72,7 +74,6 @@ Future<void> listAndReadMaps() async {
             }
           }
           // Now, we can safely add the location list to the provider
-          LocationMapProvider locationMapProvider = LocationMapProvider();
           locationMapProvider.addLocationList(filename.split("/")[2], locationList);
         } else {
           safePrint('Expected a List but got something else: $jsonData');
