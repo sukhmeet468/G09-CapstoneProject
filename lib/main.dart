@@ -17,7 +17,7 @@ void main() async {
   // configure Amplify
   await configureAmplify();
   // Request permissions for bluetooth services
-    await requestPermissions();
+  await requestPermissions();
   runApp(
     MultiProvider(
       providers: [

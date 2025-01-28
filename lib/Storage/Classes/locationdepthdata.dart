@@ -5,13 +5,39 @@ class LocationInfo {
   final double latitude;
   final double longitude;
   final double accuracy;
+  final String outcome;
 
   LocationInfo({
-    required this.timestamp,
+    this.timestamp = "",
     required this.distance,
-    required this.confidence,
+    this.confidence = 0,
     required this.latitude,
     required this.longitude,
-    required this.accuracy,
+    this.accuracy = 0.0,
+    this.outcome = "",
   });
+
+  factory LocationInfo.fromJson(Map<String, dynamic> json) {
+    return LocationInfo(
+      latitude: json['latitude'],
+      longitude: json['longitude'],
+      distance: json['distance'],
+      confidence: json['confidence'],
+      timestamp: json['timestamp'],
+      accuracy: json['accuracy'],
+      outcome: json['outcome']
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'latitude': latitude,
+      'longitude': longitude,
+      'distance': distance,
+      'confidence': confidence,
+      'timestamp': timestamp,
+      'accuracy': accuracy,
+      "outcome": outcome
+    };
+  }
 }
