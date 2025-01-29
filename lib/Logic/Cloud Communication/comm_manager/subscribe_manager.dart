@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/subscribe.dart';
+import 'package:g9capstoneiotapp/Logic/Notifications/local_notifications.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/realtimeinfo.dart';
 import 'package:g9capstoneiotapp/Storage/Classes/locationdepthdata.dart';
 
@@ -40,6 +41,7 @@ Future<void> handleReadValuesResponse(String msg) async {
   // update the provider
   locationDataProvider.addLocation(newLocation);
   safePrint("$distance-$timestamp-$confidence-$latitude-$longitude-$accuracy");
+  await showNotification();
 }
 
 Future<void> handleHeartbeatResponse(String msg) async {

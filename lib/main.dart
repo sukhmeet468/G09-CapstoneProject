@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:g9capstoneiotapp/Logic/Bluetooth%20Comm/ble_manager.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Config/Amplify/configure.dart';
+import 'package:g9capstoneiotapp/Logic/Notifications/local_notifications.dart';
 import 'package:g9capstoneiotapp/Presentation/Authentication/login.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/premappedlist.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/realtimeinfo.dart';
@@ -18,6 +19,8 @@ void main() async {
   await configureAmplify();
   // Request permissions for bluetooth services
   await requestPermissions();
+  // notifications initializations
+  await initNotifications();
   runApp(
     MultiProvider(
       providers: [

@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:g9capstoneiotapp/Logic/Bluetooth%20Comm/ble_manager.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/fleetprovisionmanager.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/subscribe.dart';
+import 'package:g9capstoneiotapp/Logic/Notifications/local_notifications.dart';
 import 'package:g9capstoneiotapp/Presentation/Device%20Control/devicecontrol.dart';
 import 'package:g9capstoneiotapp/Presentation/Maps/PreMapped-View/premappedview.dart';
 import 'package:g9capstoneiotapp/Presentation/Maps/RealTime-View/realtimedepthscreen.dart';
@@ -27,11 +30,70 @@ class _MyAppState extends State<MyApp> {
   String prevHeartbeatValue = "";
   late Timer heartbeatTimer;
   bool isAppBluetoothConnected = false;
+  // ignore: unused_field
+  bool _notificationsEnabled = false;
 
   @override
   void initState() {
     super.initState();
     startHeartbeatCheck();
+    _isAndroidPermissionGranted();
+    _requestPermissions();
+    _configureSelectNotificationSubject();
+  }
+
+  Future<void> _isAndroidPermissionGranted() async {
+    if (Platform.isAndroid) {
+      final bool granted = await flutterLocalNotificationsPlugin
+              .resolvePlatformSpecificImplementation<
+                  AndroidFlutterLocalNotificationsPlugin>()
+              ?.areNotificationsEnabled() ??
+          false;
+
+      setState(() {
+        _notificationsEnabled = granted;
+      });
+    }
+  }
+
+  Future<void> _requestPermissions() async {
+    if (Platform.isIOS || Platform.isMacOS) {
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              MacOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+    } else if (Platform.isAndroid) {
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
+
+      final bool? grantedNotificationPermission =
+          await androidImplementation?.requestNotificationsPermission();
+      setState(() {
+        _notificationsEnabled = grantedNotificationPermission ?? false;
+      });
+    }
+  }
+
+  void _configureSelectNotificationSubject() {
+    selectNotificationStream.stream
+        .listen((NotificationResponse? response) async {
+      await Navigator.of(context).push(MaterialPageRoute<void>(
+        builder: (BuildContext context) => MyApp()
+      ));
+    });
   }
 
   void startHeartbeatCheck() {
