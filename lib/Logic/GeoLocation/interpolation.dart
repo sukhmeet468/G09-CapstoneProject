@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:g9capstoneiotapp/Logic/GeoLocation/routing.dart';
 import 'package:g9capstoneiotapp/Storage/Classes/locationdepthdata.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -60,10 +61,41 @@ Map<String, dynamic> processInterpolation(List<LocationInfo> locationList) {
   safePrint("Longitude Values: $xLongitude");
   safePrint("Latitude Values: $yLatitude");
 
+  // Calculate min and max values for latitudes (y) and longitudes (x)
+  double minLat = coorVals.map((e) => e[0]).reduce((a, b) => a < b ? a : b); // Min latitude
+  double maxLat = coorVals.map((e) => e[0]).reduce((a, b) => a > b ? a : b); // Max latitude
+  double minLon = coorVals.map((e) => e[1]).reduce((a, b) => a < b ? a : b); // Min longitude
+  double maxLon = coorVals.map((e) => e[1]).reduce((a, b) => a > b ? a : b); // Max longitude
+
+  // Generate x (longitude) and y (latitude) values
+  List<double> xVals = List.generate(100, (i) => minLon + i * (maxLon - minLon) / 99);
+  List<double> yVals = List.generate(100, (i) => minLat + i * (maxLat - minLat) / 99);
+
+  safePrint("xVals: $xVals");
+  safePrint("yVals: $yVals");
+
+  // Get start and end coordinates
+  List<double> startCoor = [(locationList.first.latitude), (locationList.first.longitude)];
+  List<double> endCoor = [(locationList.last.latitude), (locationList.last.longitude)];
+
+  safePrint("StartCoor: $startCoor");
+  safePrint("EndCoor: $endCoor");
+
+  // Calculate average depth from the locationList
+  int averageDepth = (locationList.fold(0.0, (sum, loc) => sum + loc.distance) / locationList.length).toInt();
+
+  safePrint("AvgDepth: $averageDepth");
+
+  // run the routing algorithm
+  List<List<int>> route = findRoute(startCoor, endCoor, xVals, yVals, zInterp, averageDepth);
+
+  safePrint("Safe Route: $route");
+
   return {
     'xLongitude': xLongitude,
     'yLatitude': yLatitude,
     'zInterp': zInterp,
+    'saferoute': route
   };
 }
 
@@ -91,8 +123,8 @@ List<dynamic> normSamples(List<List<double>> coorVals) {
 
 List<List<List<double>>> meshgrid(double trim) {
   // Generate x_vals and y_vals similar to numpy linspace
-  List<double> xVals = List.generate(5, (i) => trim + i * (1 - 2 * trim) / 99);
-  List<double> yVals = List.generate(5, (i) => trim + i * (1 - 2 * trim) / 99);
+  List<double> xVals = List.generate(100, (i) => trim + i * (1 - 2 * trim) / 99);
+  List<double> yVals = List.generate(100, (i) => trim + i * (1 - 2 * trim) / 99);
   
   // Create X_norm (a grid of x_vals repeated for each y_val)
   List<List<double>> xNorm = [];
