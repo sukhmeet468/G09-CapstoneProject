@@ -43,8 +43,12 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
   }
 
   List<LatLng> generateRoutePoints(List<LocationInfo> locationList) {
-    return locationList.map((loc) => LatLng(loc.latitude, loc.longitude)).toList();
+    return locationList
+        .where((loc) => loc.distance > averageDepth) // Filter points
+        .map((loc) => LatLng(loc.latitude, loc.longitude))
+        .toList();
   }
+
 
   List<Marker> _generateMarkers() {
     List<Marker> markerList = [];
@@ -56,7 +60,7 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
       } else if (i == widget.locationList.length - 1) {
         markerColor = Colors.purple; // End point
       } else {
-        markerColor = widget.locationList[i].distance < averageDepth ? Colors.green : Colors.red;
+        markerColor = widget.locationList[i].distance < averageDepth ? Colors.red : Colors.green;
       }
 
       markerList.add(
