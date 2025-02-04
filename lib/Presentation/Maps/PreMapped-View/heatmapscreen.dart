@@ -1,9 +1,9 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_heatmap/flutter_map_heatmap.dart';
+import 'package:g9capstoneiotapp/Logic/GeoLocation/interpolation.dart';
+import 'package:g9capstoneiotapp/Presentation/Maps/PreMapped-View/chartview.dart';
+import 'package:g9capstoneiotapp/Storage/Classes/locationdepthdata.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:g9capstoneiotapp/Storage/Classes/locationdepthdata.dart'; // Assuming this class exists
 
 class HeatMapScreen extends StatefulWidget {
   final List<LocationInfo> locationList;
@@ -12,144 +12,139 @@ class HeatMapScreen extends StatefulWidget {
   const HeatMapScreen({required this.locationList, required this.mapName});
 
   @override
-  State<HeatMapScreen> createState() => _BathymetricMapScreenState();
+  State<HeatMapScreen> createState() => _HeatMapScreenState();
 }
 
-class _BathymetricMapScreenState extends State<HeatMapScreen> {
-  final StreamController<void> _rebuildStream = StreamController.broadcast();
-  List<WeightedLatLng> data = [];
+class _HeatMapScreenState extends State<HeatMapScreen> {
+  late MapController _mapController;
+  List<Marker> markers = [];
+  List<LatLng> routePoints = [];
+  List<Polygon> lakeBoundary = [];
   double averageDepth = 0;
-
-  // Define gradients for bathymetric visualization using MaterialColors
-  List<Map<double, MaterialColor>> bathymetricGradients = [
-    {
-      0.0: Colors.yellow, // Shallow areas
-      0.25: Colors.green,
-      0.5: Colors.green,
-      0.75: Colors.red,
-      1.0: Colors.red, // Deepest areas
-    },
-    {
-      0.0: Colors.cyan,
-      0.25: Colors.teal,
-      0.5: Colors.green,
-      0.75: Colors.lightGreen,
-      1.0: Colors.lime,
-    },
-  ];
-
-  var gradientIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _loadBathymetricData();
+    _mapController = MapController();
+    _processData();
   }
 
-  @override
-  void dispose() {
-    _rebuildStream.close();
-    super.dispose();
-  }
-
-  // Load bathymetric data from the location list
-  void _loadBathymetricData() {
+  void _processData() {
     if (widget.locationList.isEmpty) return;
 
-    // Calculate the average depth
-    double totalDepth = widget.locationList.fold(0, (sum, location) => sum + location.distance.toDouble());
+    double totalDepth = widget.locationList.fold(0, (sum, loc) => sum + loc.distance.toDouble());
     averageDepth = totalDepth / widget.locationList.length;
 
     setState(() {
-      data = widget.locationList.map((location) {
-        // Normalize depth values and classify as shallow or deep
-        double depth = location.distance.toDouble();
-        depth = depth < 0 ? depth.abs() : depth; // Convert negative depth to positive
-        return WeightedLatLng(
-          LatLng(location.latitude, location.longitude),
-          depth,
-        );
-      }).toList();
+      routePoints = generateRoutePoints(widget.locationList);
+      markers = _generateMarkers();
+      lakeBoundary = _generateLakeBoundary();
     });
   }
 
-  // Toggle between gradients
-  void _toggleGradient() {
-    setState(() {
-      gradientIndex = (gradientIndex + 1) % bathymetricGradients.length;
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _rebuildStream.add(null);
-      });
-    });
+  List<LatLng> generateRoutePoints(List<LocationInfo> locationList) {
+    return locationList.map((loc) => LatLng(loc.latitude, loc.longitude)).toList();
+  }
+
+  List<Marker> _generateMarkers() {
+    List<Marker> markerList = [];
+    for (int i = 0; i < widget.locationList.length; i++) {
+      LatLng point = LatLng(widget.locationList[i].latitude, widget.locationList[i].longitude);
+      Color markerColor;
+      if (i == 0) {
+        markerColor = Colors.blue; // Start point
+      } else if (i == widget.locationList.length - 1) {
+        markerColor = Colors.purple; // End point
+      } else {
+        markerColor = widget.locationList[i].distance < averageDepth ? Colors.green : Colors.red;
+      }
+
+      markerList.add(
+        Marker(
+          point: point,
+          width: 40,
+          height: 60, // Adjusted height for text
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.location_on, color: markerColor, size: 40),
+              Flexible(
+                child: Text(
+                  '${widget.locationList[i].distance.toStringAsFixed(2)} m', // Depth text
+                  style: TextStyle(
+                    fontSize: 10, // Adjust font size to avoid overflow
+                    color: Colors.black,
+                  ),
+                  overflow: TextOverflow.ellipsis, // Handle overflow with ellipsis
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    return markerList;
+  }
+
+  List<Polygon> _generateLakeBoundary() {
+    if (routePoints.length < 3) return [];
+
+    List<LatLng> boundaryPoints = computeConvexHull(routePoints);
+
+    return [
+      Polygon(
+        points: boundaryPoints,
+        color: Colors.blue.withOpacity(0.4), // Water fill effect
+        borderColor: Colors.blue.shade900,
+        borderStrokeWidth: 3,
+      )
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
-    // Center map on the first location or default coordinates
-    var initialLocation = widget.locationList.isNotEmpty
-        ? widget.locationList[0]
-        : LocationInfo(latitude: 57.8827, longitude: -6.0400, distance: 0);
-
-    // FlutterMap widget to display the bathymetric map
-    final map = FlutterMap(
-      options: MapOptions(
-        backgroundColor: Colors.blue,
-        initialCenter: LatLng(initialLocation.latitude, initialLocation.longitude),
-        initialZoom: 8.0,
-      ),
-      children: [
-        TileLayer(
-          urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-          tileProvider: NetworkTileProvider(),
-        ),
-        if (data.isNotEmpty)
-          HeatMapLayer(
-            heatMapDataSource: InMemoryHeatMapDataSource(data: data),
-            heatMapOptions: HeatMapOptions(
-              gradient: bathymetricGradients[gradientIndex],
-              minOpacity: 0.3, // Ensure bathymetry visualization is visible
-              radius: 25.0, // Control spread of depth visualization
-            ),
-            reset: _rebuildStream.stream,
-          ),
-      ],
-    );
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.mapName),
+        title: Text("Heat Map Screen"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.show_chart),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChartsScreen(locationList: widget.locationList)),
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
           Expanded(
-            child: map,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                children: [
-                  Text(
-                    "Shallow (< $averageDepth)",
-                    style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold),
-                  ),
-                  Icon(Icons.water, color: Colors.lightBlue),
-                ],
+            child: FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                initialCenter: routePoints.isNotEmpty ? routePoints.first : LatLng(37.7749, -122.4194), // Default center
+                initialZoom: routePoints.isNotEmpty ? 12 : 2, // Default zoom
               ),
-              Column(
-                children: [
-                  Text(
-                    "Deep (>= $averageDepth)",
-                    style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.bold),
-                  ),
-                  Icon(Icons.water, color: Colors.deepPurple),
-                ],
-              ),
-            ],
-          ),
-          ElevatedButton(
-            onPressed: _toggleGradient,
-            child: Text('Switch Bathymetric Gradient'),
+              children: [
+                TileLayer(
+                  urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                  tileProvider: NetworkTileProvider(),
+                ),
+                PolygonLayer(polygons: lakeBoundary),
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                      points: routePoints,
+                      strokeWidth: 4.0,
+                      color: Colors.orange,
+                    )
+                  ],
+                ),
+                MarkerLayer(markers: markers),
+              ],
+            ),
           ),
         ],
       ),

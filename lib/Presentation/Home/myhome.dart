@@ -90,6 +90,7 @@ class _MyAppState extends State<MyApp> {
   void _configureSelectNotificationSubject() {
     selectNotificationStream.stream
         .listen((NotificationResponse? response) async {
+      // ignore: use_build_context_synchronously
       await Navigator.of(context).push(MaterialPageRoute<void>(
         builder: (BuildContext context) => MyApp()
       ));

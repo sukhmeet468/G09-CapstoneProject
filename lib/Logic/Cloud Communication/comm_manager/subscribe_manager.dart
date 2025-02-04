@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/subscribe.dart';
 import 'package:g9capstoneiotapp/Logic/Notifications/local_notifications.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/realtimeinfo.dart';
 import 'package:g9capstoneiotapp/Storage/Classes/locationdepthdata.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart'; // For formatting date/time
 
 Future<void> subMQTTTopics() async {
   //subscribe to all the Topics for all stations
@@ -12,8 +15,13 @@ Future<void> subMQTTTopics() async {
 }
 
 Future<void> handleReadValuesResponse(String msg) async {
+  //-------------------------Get Current Time----------------------------//
+  String currentTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+  safePrint("Current Time: $currentTime");
+
   //-------------------------Initializing Variables----------------------------//
   LocationData locationDataProvider = LocationData();
+
   //-------------------------Parse the Incoming Message------------------------//
   dynamic parsedMessage;
   try {
@@ -22,6 +30,7 @@ Future<void> handleReadValuesResponse(String msg) async {
     safePrint("Error decoding JSON: $e");
     return;
   }
+
   //-------------------------Extract Values------------------------------------//
   String timestamp = parsedMessage['timestamp'] ?? '';
   int distance = (parsedMessage['distance'] ?? 0).toInt();
@@ -29,6 +38,7 @@ Future<void> handleReadValuesResponse(String msg) async {
   double latitude = (parsedMessage['latitude'] ?? 0).toDouble();
   double longitude = (parsedMessage['longitude'] ?? 0).toDouble();
   double accuracy = (parsedMessage['accuracy'] ?? 0).toDouble();
+
   //----------------------Update the Provider----------------------------------//
   LocationInfo newLocation = LocationInfo(
     timestamp: timestamp,
@@ -38,10 +48,30 @@ Future<void> handleReadValuesResponse(String msg) async {
     longitude: longitude,
     accuracy: accuracy,
   );
+
   // update the provider
   locationDataProvider.addLocation(newLocation);
   safePrint("$distance-$timestamp-$confidence-$latitude-$longitude-$accuracy");
+
+  //----------------------Write Log to Local File-----------------------------//
+  await writeLogToFile(msg);
+
   await showNotification();
+}
+
+/// Writes a JSON log entry to a local file
+Future<void> writeLogToFile(String message) async {
+  try {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/log.txt');
+    
+    // Append the new message to the log file
+    await file.writeAsString('$message\n', mode: FileMode.append);
+    
+    safePrint("Log written to file");
+  } catch (e) {
+    safePrint("Error writing to file: $e");
+  }
 }
 
 Future<void> handleHeartbeatResponse(String msg) async {
