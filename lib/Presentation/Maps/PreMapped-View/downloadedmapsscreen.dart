@@ -64,7 +64,7 @@ class _DownloadedMapsScreenState extends State<DownloadedMapsScreen> {
                 final mapData = downloadedMaps[index];
                 final mapName = mapData['name'];
                 final dynamicLocations = mapData['locations'] as List<dynamic>;
-
+                final saferoute = mapData['saferoute'] as List<dynamic>;
                 return GestureDetector(
                   onTap: () {
                     // Convert List<dynamic> to List<LocationInfo>
@@ -79,6 +79,7 @@ class _DownloadedMapsScreenState extends State<DownloadedMapsScreen> {
                         builder: (context) => HeatMapScreen(
                           locationList: locationList,
                           mapName: mapName,
+                          route: saferoute,
                         ),
                       ),
                     );

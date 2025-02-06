@@ -7,9 +7,10 @@ import 'package:latlong2/latlong.dart';
 
 class HeatMapScreen extends StatefulWidget {
   final List<LocationInfo> locationList;
+  final List<dynamic> route;
   final String mapName;
 
-  const HeatMapScreen({required this.locationList, required this.mapName});
+  const HeatMapScreen({required this.locationList, required this.mapName, required this.route});
 
   @override
   State<HeatMapScreen> createState() => _HeatMapScreenState();
@@ -19,8 +20,10 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
   late MapController _mapController;
   List<Marker> markers = [];
   List<LatLng> routePoints = [];
+  List<LatLng> safeRoutePoints = [];
   List<Polygon> lakeBoundary = [];
-  double averageDepth = 0;
+  double minDepth = 0;
+  double maxDepth = 0;
 
   @override
   void initState() {
@@ -32,54 +35,57 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
   void _processData() {
     if (widget.locationList.isEmpty) return;
 
-    double totalDepth = widget.locationList.fold(0, (sum, loc) => sum + loc.distance.toDouble());
-    averageDepth = totalDepth / widget.locationList.length;
-
     setState(() {
       routePoints = generateRoutePoints(widget.locationList);
+      int mostOccurringDepth = _findMostOccurringDepth();
+      minDepth = mostOccurringDepth - 50;
+      maxDepth = mostOccurringDepth + 50;
       markers = _generateMarkers();
       lakeBoundary = _generateLakeBoundary();
+      if (widget.route[0] != "NA") {
+        safeRoutePoints = generateSafeRoute(widget.route);
+      } else {
+        safeRoutePoints = [];
+      }
     });
   }
 
-  List<LatLng> generateRoutePoints(List<LocationInfo> locationList) {
-    return locationList
-        .where((loc) => loc.distance > averageDepth) // Filter points
-        .map((loc) => LatLng(loc.latitude, loc.longitude))
-        .toList();
+  int _findMostOccurringDepth() {
+    Map<int, int> depthCounts = {};
+    for (var location in widget.locationList) {
+      depthCounts[location.distance] = (depthCounts[location.distance] ?? 0) + 1;
+    }
+    return depthCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
   }
 
+  List<LatLng> generateRoutePoints(List<LocationInfo> locationList) {
+    return locationList.map((loc) => LatLng(loc.latitude, loc.longitude)).toList();
+  }
+
+  List<LatLng> generateSafeRoute(List<dynamic> route) {
+    return route.map((point) => LatLng(point[0], point[1])).toList();
+  }
 
   List<Marker> _generateMarkers() {
     List<Marker> markerList = [];
-    for (int i = 0; i < widget.locationList.length; i++) {
-      LatLng point = LatLng(widget.locationList[i].latitude, widget.locationList[i].longitude);
-      Color markerColor;
-      if (i == 0) {
-        markerColor = Colors.blue; // Start point
-      } else if (i == widget.locationList.length - 1) {
-        markerColor = Colors.purple; // End point
-      } else {
-        markerColor = widget.locationList[i].distance < averageDepth ? Colors.red : Colors.green;
-      }
+    for (var location in widget.locationList) {
+      LatLng point = LatLng(location.latitude, location.longitude);
+      Color markerColor = (location.distance >= minDepth && location.distance <= maxDepth) ? Colors.green : Colors.red;
 
       markerList.add(
         Marker(
           point: point,
           width: 40,
-          height: 60, // Adjusted height for text
+          height: 60,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.location_on, color: markerColor, size: 40),
               Flexible(
                 child: Text(
-                  '${widget.locationList[i].distance.toStringAsFixed(2)} m', // Depth text
-                  style: TextStyle(
-                    fontSize: 10, // Adjust font size to avoid overflow
-                    color: Colors.black,
-                  ),
-                  overflow: TextOverflow.ellipsis, // Handle overflow with ellipsis
+                  '${location.distance.toStringAsFixed(2)} m',
+                  style: TextStyle(fontSize: 10, color: Colors.black),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -92,13 +98,11 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
 
   List<Polygon> _generateLakeBoundary() {
     if (routePoints.length < 3) return [];
-
     List<LatLng> boundaryPoints = computeConvexHull(routePoints);
-
     return [
       Polygon(
         points: boundaryPoints,
-        color: Colors.blue.withOpacity(0.4), // Water fill effect
+        color: Colors.blue.withOpacity(0.4),
         borderColor: Colors.blue.shade900,
         borderStrokeWidth: 3,
       )
@@ -116,7 +120,7 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ChartsScreen(locationList: widget.locationList)),
+                MaterialPageRoute(builder: (context) => ChartsScreen(locationList: widget.locationList, route: widget.route,)),
               );
             },
           ),
@@ -128,8 +132,8 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
             child: FlutterMap(
               mapController: _mapController,
               options: MapOptions(
-                initialCenter: routePoints.isNotEmpty ? routePoints.first : LatLng(37.7749, -122.4194), // Default center
-                initialZoom: routePoints.isNotEmpty ? 12 : 2, // Default zoom
+                initialCenter: routePoints.isNotEmpty ? routePoints.first : LatLng(37.7749, -122.4194),
+                initialZoom: routePoints.isNotEmpty ? 12 : 2,
               ),
               children: [
                 TileLayer(
@@ -140,18 +144,37 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
                 PolylineLayer(
                   polylines: [
                     Polyline(
-                      points: routePoints,
+                      points: safeRoutePoints,
                       strokeWidth: 4.0,
-                      color: Colors.orange,
-                    )
+                      color: Colors.transparent,
+                    ),
                   ],
                 ),
-                MarkerLayer(markers: markers),
+                MarkerLayer(
+                  markers: [
+                    ...markers,
+                    ...generateCylinderMarkers(safeRoutePoints),
+                  ],
+                )
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  List<Marker> generateCylinderMarkers(List<LatLng> points) {
+    return points.map((point) => Marker(
+      point: point,
+      width: 20,
+      height: 20,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          shape: BoxShape.circle,
+        ),
+      ),
+    )).toList();
   }
 }

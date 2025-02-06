@@ -48,6 +48,17 @@ Future<void> listAndReadMaps() async {
         final jsonData = jsonDecode(fileData);
         // Assuming jsonData is a List<dynamic>, so we need to map each item to a LocationInfo object
         if (jsonData is List) {
+          // Take out the last element only if it's a list
+          final lastElement = jsonData.last;
+          
+          // If the last element is a list itself, remove it from the main list
+          if (lastElement is List) {
+            jsonData.removeLast();
+            locationMapProvider.addroute(lastElement);
+          } else{
+            locationMapProvider.addroute(["NA"]);
+          }
+
           List<LocationInfo> locationList = [];
           for (var jsonObject in jsonData) {
             try {

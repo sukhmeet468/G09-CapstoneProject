@@ -56,7 +56,7 @@ class _PreMappedRoutesScreenState extends State<PreMappedRoutesScreen> {
     // Convert the list of LocationInfo to a serializable format (e.g., maps)
     final serializedLocations = list.map((location) => location.toJson()).toList();
     // Save the map name and its serialized location list as a JSON object
-    final mapData = {'name': mapName, 'locations': serializedLocations};
+    final mapData = {'name': mapName, 'locations': serializedLocations, 'saferoute': routeresult};
     // Retrieve the existing downloaded maps, if any
     final downloadedMapsJson = prefs.getStringList('downloaded_maps') ?? [];
     // Add the new map data to the list
@@ -101,6 +101,8 @@ class _PreMappedRoutesScreenState extends State<PreMappedRoutesScreen> {
                     .getMapName(index);
                 List<LocationInfo> locationList = Provider.of<LocationMapProvider>(context, listen: false)
                               .getLocationList(index);
+                List<dynamic> saferoute = Provider.of<LocationMapProvider>(context, listen: false)
+                              .getRoute(index);
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -109,6 +111,7 @@ class _PreMappedRoutesScreenState extends State<PreMappedRoutesScreen> {
                         builder: (context) => HeatMapScreen(
                           locationList: locationList,
                           mapName: mapName,
+                          route: saferoute,
                         ),
                       ),
                     );

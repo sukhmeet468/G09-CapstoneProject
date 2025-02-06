@@ -3,6 +3,7 @@ import 'package:g9capstoneiotapp/Storage/Classes/locationdepthdata.dart';
 
 // List to store maps and their location lists
 List<Map<String, dynamic>> locationMaps = [];
+List<dynamic> routeresult = [];
 
 // This will hold multiple maps with their names and location lists
 class LocationMapProvider with ChangeNotifier {
@@ -35,5 +36,14 @@ class LocationMapProvider with ChangeNotifier {
   void setLocationMaps(List<Map<String, dynamic>> newLocationMaps) {
     locationMaps = newLocationMaps;
     notifyListeners();
+  }
+
+  void addroute(List<dynamic> route){
+    routeresult.add(route);
+    notifyListeners();
+  }
+
+  List<dynamic> getRoute(int index){
+    return routeresult[index];
   }
 }

@@ -26,6 +26,7 @@ void subscribeToTopic(MqttServerClient client, String topic) {
     if (topic == responseTopic) {
       await handleResponse(pt);
     } else if(topic == "g9capstone/readValues") {
+      safePrint("Received From WiFi.............");
       await handleReadValuesResponse(pt);
     } else if(topic == "g9capstone/piHeartbeat") {
       await handleHeartbeatResponse(pt);

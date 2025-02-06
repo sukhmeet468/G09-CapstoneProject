@@ -17,7 +17,7 @@ Future<void> subMQTTTopics() async {
 Future<void> handleReadValuesResponse(String msg) async {
   //-------------------------Get Current Time----------------------------//
   String currentTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-  safePrint("Current Time: $currentTime");
+  safePrint("Real Time Value Received: $msg at the Current Time: $currentTime");
 
   //-------------------------Initializing Variables----------------------------//
   LocationData locationDataProvider = LocationData();

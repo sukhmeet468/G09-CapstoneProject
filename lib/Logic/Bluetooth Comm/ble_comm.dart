@@ -84,7 +84,7 @@ Future<void> subscribeToBleCharacteristic({
       (data) async {
         String dataRecv = utf8.decode(data).toString();
         // Handle incoming data
-        safePrint('Received data: $dataRecv');
+        safePrint('Received data from BLE..........');
         // update the provider to display on UI
         await handleReadValuesResponse(dataRecv);
       },
