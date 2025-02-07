@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:g9capstoneiotapp/Presentation/Maps/PreMapped-View/downloadedmapsscreen.dart';
@@ -35,7 +34,9 @@ class _PreMappedRoutesScreenState extends State<PreMappedRoutesScreen> {
   }
 
   Future<void> _refreshMaps() async {
+    safePrint("Time button clicked at: ${DateTime.now().toUtc().millisecondsSinceEpoch}");
     await listAndReadMaps();
+    safePrint("Maps read and display at: ${DateTime.now().toUtc().millisecondsSinceEpoch}");
     _getMapsfromProvider();
   }
 

@@ -6,7 +6,6 @@ import 'package:g9capstoneiotapp/Logic/Notifications/local_notifications.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/realtimeinfo.dart';
 import 'package:g9capstoneiotapp/Storage/Classes/locationdepthdata.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:intl/intl.dart'; // For formatting date/time
 
 Future<void> subMQTTTopics() async {
   //subscribe to all the Topics for all stations
@@ -16,8 +15,8 @@ Future<void> subMQTTTopics() async {
 
 Future<void> handleReadValuesResponse(String msg) async {
   //-------------------------Get Current Time----------------------------//
-  String currentTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-  safePrint("Real Time Value Received: $msg at the Current Time: $currentTime");
+  DateTime currentTime = (DateTime.now().toUtc());
+  safePrint("Real Time Value Received: $msg at the Current Time: ${currentTime.millisecondsSinceEpoch}");
 
   //-------------------------Initializing Variables----------------------------//
   LocationData locationDataProvider = LocationData();

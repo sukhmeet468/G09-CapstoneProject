@@ -34,7 +34,6 @@ Future<void> listAndReadMaps() async {
         pluginOptions: S3ListPluginOptions.listAll(),
       ),
     ).result;
-    safePrint('Listed items: ${listResult.items}');
 
     // Loop through the items and download each file's data
     for (final item in listResult.items) {
@@ -79,7 +78,6 @@ Future<void> listAndReadMaps() async {
                 accuracy: accuracy,
               );
               locationList.add(location);  // Add to the list
-              safePrint(locationList);
             } catch (e) {
               safePrint('Error parsing location data: $e');
             }
