@@ -68,6 +68,7 @@ Future<void> listAndReadMaps() async {
               double latitude = (jsonObject['latitude'] ?? 0.0).toDouble();
               double longitude = (jsonObject['longitude'] ?? 0.0).toDouble();
               double accuracy = (jsonObject['accuracy'] ?? 0.0).toDouble();
+              String prediction = (jsonObject['prediction'] ?? -1);
               // Create a LocationInfo object
               LocationInfo location = LocationInfo(
                 timestamp: timestamp,
@@ -76,6 +77,7 @@ Future<void> listAndReadMaps() async {
                 latitude: latitude,
                 longitude: longitude,
                 accuracy: accuracy,
+                prediction: prediction
               );
               locationList.add(location);  // Add to the list
             } catch (e) {

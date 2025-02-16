@@ -21,9 +21,9 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
   List<Marker> markers = [];
   List<LatLng> routePoints = [];
   List<LatLng> safeRoutePoints = [];
-  List<Polygon> lakeBoundary = [];
-  double minDepth = 0;
-  double maxDepth = 0;
+  List<Polygon> blueLakeBoundary = [];
+  List<Polygon> greenLakeBoundary = [];
+  List<Polygon> redLakeBoundary = [];
 
   @override
   void initState() {
@@ -37,11 +37,14 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
 
     setState(() {
       routePoints = generateRoutePoints(widget.locationList);
-      int mostOccurringDepth = _findMostOccurringDepth();
-      minDepth = mostOccurringDepth - 50;
-      maxDepth = mostOccurringDepth + 50;
-      markers = _generateMarkers();
-      lakeBoundary = _generateLakeBoundary();
+      markers = _generateNormalMarkers();
+      
+      // Separate markers into green, red, and blue categories
+      List<LatLng> blueZoneRoute = generateRoutePointsForPrediction(["0", "1", "2", "3", "4"]);
+      
+      // Generate polygons for the boundaries of each zone
+      blueLakeBoundary = _generateLakeBoundary(blueZoneRoute, Colors.blue);
+
       if (widget.route[0] != "NA") {
         safeRoutePoints = generateSafeRoute(widget.route);
       } else {
@@ -50,28 +53,37 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
     });
   }
 
-  int _findMostOccurringDepth() {
-    Map<int, int> depthCounts = {};
-    for (var location in widget.locationList) {
-      depthCounts[location.distance] = (depthCounts[location.distance] ?? 0) + 1;
-    }
-    return depthCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
-  }
-
   List<LatLng> generateRoutePoints(List<LocationInfo> locationList) {
     return locationList.map((loc) => LatLng(loc.latitude, loc.longitude)).toList();
+  }
+
+  List<LatLng> generateRoutePointsForPrediction(List<String> predictionValues) {
+    return widget.locationList
+        .where((loc) => predictionValues.contains(loc.prediction))
+        .map((loc) => LatLng(loc.latitude, loc.longitude))
+        .toList();
   }
 
   List<LatLng> generateSafeRoute(List<dynamic> route) {
     return route.map((point) => LatLng(point[0], point[1])).toList();
   }
 
-  List<Marker> _generateMarkers() {
+  List<Marker> _generateNormalMarkers() {
     List<Marker> markerList = [];
+    Color markerColor; // Declare the markerColor variable
     for (var location in widget.locationList) {
       LatLng point = LatLng(location.latitude, location.longitude);
-      Color markerColor = (location.distance >= minDepth && location.distance <= maxDepth) ? Colors.green : Colors.red;
-
+      // Assign the color based on the prediction value
+      if (location.prediction == "0" || location.prediction == "1") {
+        markerColor = Colors.green;
+      } else if (location.prediction == "2") {
+        markerColor = Colors.yellow;
+      } else if (location.prediction == "3") {
+        markerColor = Colors.orange;
+      } else {
+        markerColor = Colors.red;
+      }
+      // Add the marker to the list
       markerList.add(
         Marker(
           point: point,
@@ -96,17 +108,52 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
     return markerList;
   }
 
-  List<Polygon> _generateLakeBoundary() {
+  List<Polygon> _generateLakeBoundary(List<LatLng> routePoints, Color color) {
     if (routePoints.length < 3) return [];
     List<LatLng> boundaryPoints = computeConvexHull(routePoints);
     return [
       Polygon(
         points: boundaryPoints,
-        color: Colors.blue.withOpacity(0.4),
-        borderColor: Colors.blue.shade900,
+        color: color.withOpacity(0.4),  // Color for the specific boundary
+        borderColor: color,
         borderStrokeWidth: 3,
-      )
+      ),
     ];
+  }
+
+  List<Marker> _generatePatchesAroundMarkers() {
+    List<Marker> patchMarkers = [];
+    for (var location in widget.locationList) {
+      Color markerColor;
+      if (location.prediction == "0" || location.prediction == "1") {
+        markerColor = Colors.green;
+      } else if (location.prediction == "2") {
+        markerColor = Colors.yellow;
+      } else if (location.prediction == "3") {
+        markerColor = Colors.orange;
+      } else {
+        markerColor = Colors.red;
+      }
+      
+      // Generate small patches around the marker position
+      LatLng point = LatLng(location.latitude, location.longitude);
+      patchMarkers.add(
+        Marker(
+          point: point,
+          width: 20, // Small size for the patch
+          height: 20,
+          child: Container(
+            height: 10,
+            width: 10,
+            decoration: BoxDecoration(
+              color: markerColor.withOpacity(0.5), // Slight transparency for patches
+              shape: BoxShape.circle,
+            ),
+          ),
+        ),
+      );
+    }
+    return patchMarkers;
   }
 
   @override
@@ -140,7 +187,8 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
                   urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                   tileProvider: NetworkTileProvider(),
                 ),
-                PolygonLayer(polygons: lakeBoundary),
+                // Add Blue Lake Boundary for all markers
+                PolygonLayer(polygons: blueLakeBoundary),
                 PolylineLayer(
                   polylines: [
                     Polyline(
@@ -153,9 +201,10 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
                 MarkerLayer(
                   markers: [
                     ...markers,
-                    ...generateCylinderMarkers(safeRoutePoints),
+                    ..._generatePatchesAroundMarkers(),
+                    ...generateCylinderMarkers(safeRoutePoints)
                   ],
-                )
+                ),
               ],
             ),
           ),
@@ -163,7 +212,6 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
       ),
     );
   }
-
   List<Marker> generateCylinderMarkers(List<LatLng> points) {
     return points.map((point) => Marker(
       point: point,
