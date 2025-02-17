@@ -3,6 +3,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:g9capstoneiotapp/Presentation/Maps/PreMapped-View/downloadedmapsscreen.dart';
 import 'package:g9capstoneiotapp/Presentation/Maps/PreMapped-View/heatmapscreen.dart';
+import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/currusedmapinfo.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/premappedlist.dart';
 import 'package:g9capstoneiotapp/Storage/Classes/locationdepthdata.dart';
 import 'package:g9capstoneiotapp/Storage/Cloud%20Storage/readstorage_functions.dart';
@@ -109,10 +110,11 @@ class _PreMappedRoutesScreenState extends State<PreMappedRoutesScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HeatMapScreen(
-                          locationList: locationList,
-                          mapName: mapName,
-                          route: saferoute,
+                        builder: (context) => MultiProvider(
+                            providers: [
+                              ChangeNotifierProvider(create: (_) => SelectedMapProvider()),
+                            ],
+                          child: HeatMapScreen(locationList: locationList, mapName: mapName, route: saferoute)
                         ),
                       ),
                     );

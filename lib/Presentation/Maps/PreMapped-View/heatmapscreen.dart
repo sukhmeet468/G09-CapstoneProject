@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:g9capstoneiotapp/Logic/GeoLocation/interpolation.dart';
 import 'package:g9capstoneiotapp/Presentation/Maps/PreMapped-View/chartview.dart';
+import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/currusedmapinfo.dart';
 import 'package:g9capstoneiotapp/Storage/Classes/locationdepthdata.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 
 class HeatMapScreen extends StatefulWidget {
   final List<LocationInfo> locationList;
@@ -24,6 +26,7 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
   List<Polygon> blueLakeBoundary = [];
   List<Polygon> greenLakeBoundary = [];
   List<Polygon> redLakeBoundary = [];
+  bool isMapActive = false;
 
   @override
   void initState() {
@@ -162,6 +165,28 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
       appBar: AppBar(
         title: Text("Heat Map Screen"),
         actions: [
+          IconButton(
+            icon: Icon(Icons.notifications_active,
+                color: isMapActive ? Colors.green : Colors.red),
+            onPressed: () {
+              setState(() => isMapActive = true);
+              Provider.of<SelectedMapProvider>(context, listen: false).selectMap(
+                widget.mapName,
+                widget.locationList,
+                widget.route,
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.stop,
+                color: isMapActive ? Colors.black : Colors.grey),
+            onPressed: isMapActive
+                ? () {
+                    setState(() => isMapActive = false);
+                    Provider.of<SelectedMapProvider>(context, listen: false).clearSelection();
+                  }
+                : null,
+          ),
           IconButton(
             icon: Icon(Icons.show_chart),
             onPressed: () {

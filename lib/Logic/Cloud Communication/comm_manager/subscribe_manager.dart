@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Communication/mqttiotmethods/subscribe.dart';
 import 'package:g9capstoneiotapp/Logic/Notifications/local_notifications.dart';
+import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/currusedmapinfo.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/realtimeinfo.dart';
 import 'package:g9capstoneiotapp/Storage/Classes/locationdepthdata.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:path_provider/path_provider.dart';
 
 Future<void> subMQTTTopics() async {
@@ -52,10 +54,22 @@ Future<void> handleReadValuesResponse(String msg) async {
   locationDataProvider.addLocation(newLocation);
   safePrint("$distance-$timestamp-$confidence-$latitude-$longitude-$accuracy");
 
-  //----------------------Write Log to Local File-----------------------------//
-  await writeLogToFile(msg);
+  // Get selected map locations
+  final selectedMapProvider = SelectedMapProvider();
+  List<LocationInfo> selectedLocations = selectedMapProvider.selectedLocationList;
 
-  await showNotification();
+  // calculate the distance from the current location to points where prediction is greater than 1 and send a notification
+  const double alertDistance = 20.0; // 20 meters
+  final Distance distanceaway = Distance();
+
+  for (var loc in selectedLocations.where((loc) => (int.tryParse(loc.prediction) ?? -1) > 1)) {
+    double dist = distanceaway(LatLng(newLocation.latitude, newLocation.longitude),
+                           LatLng(loc.latitude, loc.longitude));
+    if (dist <= alertDistance) {
+      await showNotification(message: "Warning: Approaching high-risk area 20m away (Prediction: ${loc.prediction})");
+      break;
+    }
+  }
 }
 
 /// Writes a JSON log entry to a local file

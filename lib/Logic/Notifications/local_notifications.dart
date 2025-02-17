@@ -128,7 +128,7 @@ Future<void> initNotifications() async{
   );
 }
 
-Future<void> showNotification() async {
+Future<void> showNotification({required String message}) async {
   const AndroidNotificationDetails androidNotificationDetails = 
     AndroidNotificationDetails('your channel id', 'your channel name',
             channelDescription: 'your channel description',
@@ -138,6 +138,6 @@ Future<void> showNotification() async {
   const NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
   await flutterLocalNotificationsPlugin.show(
-      id++, 'WARNING', 'TESTING NOTIFICATIONS !', notificationDetails,
-      payload: 'TESTING NOTIFICATIONS !');
+      id++, 'WARNING', message, notificationDetails,
+      payload: message);
 }

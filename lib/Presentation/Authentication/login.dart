@@ -2,6 +2,7 @@ import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:flutter/material.dart';
 import 'package:g9capstoneiotapp/Presentation/Authentication/auth_layout.dart';
 import 'package:g9capstoneiotapp/Presentation/Home/myhome.dart';
+import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/currusedmapinfo.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/premappedlist.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/realtimeinfo.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/userinfo.dart';
@@ -95,6 +96,7 @@ class _MyLoginState extends State<MyLogin> {
                 ChangeNotifierProvider(create: (_) => UserAttributes()),
                 ChangeNotifierProvider(create: (_) => LocationData()),
                 ChangeNotifierProvider(create: (_) => LocationMapProvider()),
+                ChangeNotifierProvider(create: (_) => SelectedMapProvider()),
                 // Other providers if you have them
               ],
               child: MyApp(),

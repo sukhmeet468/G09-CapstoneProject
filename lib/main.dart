@@ -4,6 +4,7 @@ import 'package:g9capstoneiotapp/Logic/Bluetooth%20Comm/ble_manager.dart';
 import 'package:g9capstoneiotapp/Logic/Cloud%20Config/Amplify/configure.dart';
 import 'package:g9capstoneiotapp/Logic/Notifications/local_notifications.dart';
 import 'package:g9capstoneiotapp/Presentation/Authentication/login.dart';
+import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/currusedmapinfo.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/premappedlist.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/realtimeinfo.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/userinfo.dart';
@@ -27,6 +28,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UserAttributes()),
         ChangeNotifierProvider(create: (_) => LocationData()),
         ChangeNotifierProvider(create: (_) => LocationMapProvider()),
+        ChangeNotifierProvider(create: (_) => SelectedMapProvider()),
       ],
       child: MaterialApp(
         home: MyLogin(),

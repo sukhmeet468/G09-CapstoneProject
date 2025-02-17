@@ -10,6 +10,7 @@ import 'package:g9capstoneiotapp/Logic/Notifications/local_notifications.dart';
 import 'package:g9capstoneiotapp/Presentation/Device%20Control/devicecontrol.dart';
 import 'package:g9capstoneiotapp/Presentation/Maps/PreMapped-View/premappedview.dart';
 import 'package:g9capstoneiotapp/Presentation/Maps/RealTime-View/realtimedepthscreen.dart';
+import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/currusedmapinfo.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/premappedlist.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/realtimeinfo.dart';
 import 'package:mqtt_client/mqtt_client.dart';
@@ -286,6 +287,7 @@ class _MyAppState extends State<MyApp> {
                               providers: [
                                 ChangeNotifierProvider(create: (_) => LocationData()),
                                 ChangeNotifierProvider(create: (_) => LocationMapProvider()),
+                                ChangeNotifierProvider(create: (_) => SelectedMapProvider()),
                               ],
                               child: RealTimeDepthScreen(),
                             ),
@@ -319,6 +321,7 @@ class _MyAppState extends State<MyApp> {
                               providers: [
                                 ChangeNotifierProvider(create: (context) => LocationData()),
                                 ChangeNotifierProvider(create: (_) => LocationMapProvider()),
+                                ChangeNotifierProvider(create: (_) => SelectedMapProvider()),
                               ],
                               child: PreMappedRoutesScreen(),
                             ),
