@@ -47,11 +47,19 @@ class _DeviceControlScreenState extends State<DeviceControlScreen> {
     await sendStop(); // Assume this is implemented elsewhere
     setState(() {
       isStopEnabled = false;
+      isUploadMapEnabled = false; // Temporarily disable Upload Map
+    });
+    _saveState();
+
+    // Add a 10-second delay before enabling the Upload Map button
+    await Future.delayed(const Duration(seconds: 10));
+
+    setState(() {
       isUploadMapEnabled = true;
-      isStartEnabled = true;
     });
     _saveState();
   }
+
 
   Future<void> onUploadMapPressed() async {
     await sendUpload(); // Assume this is implemented elsewhere
