@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:g9capstoneiotapp/Presentation/Maps/PreMapped-View/premappedview.dart';
+import 'package:g9capstoneiotapp/Presentation/Home/myhome.dart';
+import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/currusedmapinfo.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/premappedlist.dart';
 import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/realtimeinfo.dart';
+import 'package:g9capstoneiotapp/Storage/App%20Storage/Providers/userinfo.dart';
 import 'package:g9capstoneiotapp/Storage/Classes/locationdepthdata.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,10 +47,13 @@ class _DownloadedMapsScreenState extends State<DownloadedMapsScreen> {
               MaterialPageRoute(
                 builder: (context) => MultiProvider(
                   providers: [
-                    ChangeNotifierProvider(create: (context) => LocationData()),
+                    ChangeNotifierProvider(create: (_) => UserAttributes()),
+                    ChangeNotifierProvider(create: (_) => LocationData()),
                     ChangeNotifierProvider(create: (_) => LocationMapProvider()),
+                    ChangeNotifierProvider(create: (_) => SelectedMapProvider()),
+                    // Other providers if you have them
                   ],
-                  child: PreMappedRoutesScreen(),
+                  child: MyApp(),
                 ),
               ),
             );
