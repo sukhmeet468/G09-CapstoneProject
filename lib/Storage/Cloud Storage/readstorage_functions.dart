@@ -53,7 +53,7 @@ Future<void> listAndReadMaps() async {
           // If the last element is a list itself, remove it from the main list
           if (lastElement is List) {
             jsonData.removeLast();
-            locationMapProvider.addroute(lastElement);
+            locationMapProvider.addroute(lastElement); // getting the safe route of the list 
           } else{
             locationMapProvider.addroute(["NA"]);
           }
