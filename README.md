@@ -14,6 +14,13 @@
 
 ##### Department Supervisor: Dr. Ken Ferens 
 
+### Scripts on RPi4: 
+[Scripts Folder](https://github.com/sukhmeet468/G09-CapstoneProject/tree/f63e22d9a8a3afb62f520affc57ed49c6e90204a/RPi4_Scripts)
+These scripts also dont have access keys and api keys needed so are read-only scripts.
+
+### Testing Videos:
+[Testing.md file](https://github.com/sukhmeet468/G09-CapstoneProject/blob/f63e22d9a8a3afb62f520affc57ed49c6e90204a/Testing%20Videos.md)
+
 ### Note for the App:
 This repository is read-only and is intended for reference purposes only. While you can explore the code and structure of the application, it cannot be cloned and run directly due to its dependencies on AWS services and configurations tied to a specific AWS account.
 
