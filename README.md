@@ -14,3 +14,11 @@
 
 ##### Department Supervisor: Dr. Ken Ferens 
 
+#### App Running and Configuration Steps: 
+1. Run **flutter pub get** to install dependencies
+2. Setup the app with AWS Amplify
+    2.1 Setup Amplify CLI and configure Amplify using the instructions https://docs.amplify.aws/gen1/flutter/tools/cli/start/set-up-cli/
+    2.2 used the command **amplify configure**
+    2.3 Initialize amplify running the command **amplify init** and select yes for existing environment
+    2.4 Then Run **amplify pull**
+3. 

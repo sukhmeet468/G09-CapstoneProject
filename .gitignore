@@ -1,3 +1,6 @@
+## inore certs, access keys and APIs
+assets/certs/
+
 # Miscellaneous
 *.class
 *.log
