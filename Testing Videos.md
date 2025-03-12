@@ -2,26 +2,26 @@
 
 ### Below are the testing videos demonstrating various functionalities of this project:
 
-[Civil lab Testing Video 01 - Bricks placed as Hazard](https://1024terabox.com/s/1FbWLkuYTeSYl0v6Xf3cmOQ)
+[Civil lab Testing Video 01 - Bricks placed as Hazard](https://1024terabox.com/s/1FbWLkuYTeSYl0v6Xf3cmOQ){:target="_blank"}
 
-[Civil lab Testing Video 02 - Bricks placed as Hazard](https://1024terabox.com/s/1UHk9O8M8V-EQmi9-H-fhQQ)
+[Civil lab Testing Video 02 - Bricks placed as Hazard](https://1024terabox.com/s/1UHk9O8M8V-EQmi9-H-fhQQ){:target="_blank"}
 
-[Civil Lab Bricks Placement Video](https://github.com/sukhmeet468/G09-CapstoneProject/blob/f460f0b377f60438ffa917808c202c8ed3219179/Testing%20Images%20and%20Videos/Civil%20Lab%20-%20Bricks%20Placement.mp4)
+[Civil Lab Bricks Placement Video](https://github.com/sukhmeet468/G09-CapstoneProject/blob/f460f0b377f60438ffa917808c202c8ed3219179/Testing%20Images%20and%20Videos/Civil%20Lab%20-%20Bricks%20Placement.mp4){:target="_blank"}
 
-[Swimming Pool Testing - Shallow End with Table](https://1024terabox.com/s/1ELnNi1zUl8QAEcxHrxtVsw)
+[Swimming Pool Testing - Shallow End with Table](https://1024terabox.com/s/1ELnNi1zUl8QAEcxHrxtVsw){:target="_blank"}
 
-[Swimming Pool Testing - Deeper End](https://1024terabox.com/s/1eJ-TNA9VBJRgO1qguR25ew)
+[Swimming Pool Testing - Deeper End](https://1024terabox.com/s/1eJ-TNA9VBJRgO1qguR25ew){:target="_blank"}
 
-[Software Only Testing Video](https://1024terabox.com/s/1_tBgJ6EleEtXPEBdIXOLSQ)
+[Software Only Testing Video](https://1024terabox.com/s/1_tBgJ6EleEtXPEBdIXOLSQ){:target="_blank"}
 
-[Software Only Testing - Wifi](https://1024terabox.com/s/1Tac_So5uPmT1-_UVecBFzQ)
+[Software Only Testing - Wifi](https://1024terabox.com/s/1Tac_So5uPmT1-_UVecBFzQ){:target="_blank"}
 
-[Software Only Testing - Bluetooth](https://1024terabox.com/s/1Acb5nlhLIjqxNLorzuJ4RQ)
+[Software Only Testing - Bluetooth](https://1024terabox.com/s/1Acb5nlhLIjqxNLorzuJ4RQ){:target="_blank"}
 
 Below are the some images of this project:
 
-[Civil Lab Testing Image](https://github.com/sukhmeet468/G09-CapstoneProject/blob/f460f0b377f60438ffa917808c202c8ed3219179/Testing%20Images%20and%20Videos/Civil%20Lab%20Testing.jpeg)
+[Civil Lab Testing Image](https://github.com/sukhmeet468/G09-CapstoneProject/blob/f460f0b377f60438ffa917808c202c8ed3219179/Testing%20Images%20and%20Videos/Civil%20Lab%20Testing.jpeg){:target="_blank"}
 
-[Swimming Pool Testing Shallow End With Table Photo](https://github.com/sukhmeet468/G09-CapstoneProject/blob/0eb35e8b20656f4b6ed536867e569ea9da7e0eff/Testing%20Images%20and%20Videos/Swimming%20Pool%20Photo.jpeg)
+[Swimming Pool Testing Shallow End With Table Photo](https://github.com/sukhmeet468/G09-CapstoneProject/blob/0eb35e8b20656f4b6ed536867e569ea9da7e0eff/Testing%20Images%20and%20Videos/Swimming%20Pool%20Photo.jpeg){:target="_blank"}
 
-[Civil Lab Test Bed Measurement](https://github.com/sukhmeet468/G09-CapstoneProject/blob/f460f0b377f60438ffa917808c202c8ed3219179/Testing%20Images%20and%20Videos/Measurement_of_TestBedCivil_lab.JPG)
+[Civil Lab Test Bed Measurement](https://github.com/sukhmeet468/G09-CapstoneProject/blob/f460f0b377f60438ffa917808c202c8ed3219179/Testing%20Images%20and%20Videos/Measurement_of_TestBedCivil_lab.JPG){:target="_blank"}
