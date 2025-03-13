@@ -8,7 +8,7 @@
 
 [Civil Lab Bricks Placement Video](https://github.com/sukhmeet468/G09-CapstoneProject/blob/f460f0b377f60438ffa917808c202c8ed3219179/Testing%20Images%20and%20Videos/Civil%20Lab%20-%20Bricks%20Placement.mp4)
 
-[Swimming Pool Testing - Shallow End with Table](https://1024terabox.com/s/1ELnNi1zUl8QAEcxHrxtVsw)
+[Swimming Pool Testing - Shallow End with Table](https://1024terabox.com/s/1rJLpOTjYJsa84LNpkl9xnA)
 
 [Swimming Pool Testing - Deeper End](https://1024terabox.com/s/1eJ-TNA9VBJRgO1qguR25ew)
 
