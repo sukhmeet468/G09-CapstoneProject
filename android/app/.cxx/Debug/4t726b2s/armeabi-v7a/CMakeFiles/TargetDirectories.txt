@@ -1,0 +1,2 @@
+/Users/shora/Downloads/G09-CapstoneProject/android/app/.cxx/Debug/4t726b2s/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/shora/Downloads/G09-CapstoneProject/android/app/.cxx/Debug/4t726b2s/armeabi-v7a/CMakeFiles/rebuild_cache.dir
