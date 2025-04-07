@@ -2,7 +2,7 @@
 
 ### Below are the testing videos demonstrating various functionalities of this project:
 
-[Project Demo](https://www.terabox.app/play/video?path=%2FCapstone%20-%20Demo%20Video.MP4&t=-1)
+[Project Demo](https://1024terabox.com/s/1BczYb9x8gVzY71AuZm48hQ)
 
 [Civil lab Testing Video 01 - Bricks placed as Hazard](https://1024terabox.com/s/1FbWLkuYTeSYl0v6Xf3cmOQ)
 
